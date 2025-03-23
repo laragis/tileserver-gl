@@ -1,0 +1,7 @@
+services:
+  app:
+    image: ttungbmt/tileserver-gl:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: final
