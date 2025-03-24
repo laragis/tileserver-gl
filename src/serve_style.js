@@ -212,8 +212,6 @@ export const serve_style = {
     reportFont,
   ) {
     const { publicUrl } = programOpts;
-    // @tung.tt
-    const proxy_url = process.env.PROXY_URL;
     const styleFile = path.resolve(options.paths.styles, params.style);
     const styleJSON = clone(style);
 
@@ -252,21 +250,6 @@ export const serve_style = {
         source.url = `local://data/${identifier}.json`;
       }
 
-      // @tung.tt: support PROXY_URL
-      let proxy_url = process.env.PROXY_URL;
-
-      if (
-        proxy_url && url && (url.startsWith('{proxy_url}'))
-      ) {
-        source.url = url.replace('{proxy_url}', proxy_url);
-      }
-
-      if(proxy_url && source.tiles) {
-        source.tiles = source.tiles.map(tile => {
-          return tile.startsWith('{proxy_url}') ? tile.replace('{proxy_url}', proxy_url) : tile;
-        });
-      }
-
       let data = source.data;
       if (data && typeof data == 'string' && data.startsWith('file://')) {
         source.data =
@@ -288,15 +271,6 @@ export const serve_style = {
           reportFont('Arial Unicode MS Regular');
         }
       }
-    }
-
-    // @tung.tt
-    if(proxy_url && styleJSON.sprite?.startsWith('{proxy_url}')) {
-      styleJSON.sprite = styleJSON.sprite.replace('{proxy_url}', proxy_url);
-    }
-
-    if(proxy_url && styleJSON.glyphs?.startsWith('{proxy_url}')) {
-      styleJSON.glyphs = styleJSON.glyphs.replace('{proxy_url}', proxy_url);
     }
 
     let spritePaths = [];

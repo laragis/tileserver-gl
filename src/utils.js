@@ -84,6 +84,19 @@ export function fixUrl(req, url, publicUrl) {
   if (queryParams.length) {
     query = `?${queryParams.join('&')}`;
   }
+
+  // @ttungbmt
+  const sprite_tpl_url = process.env.SPRITE_TEMPLATE_URL;
+  if(sprite_tpl_url && url.startsWith('local://styles')){
+    return sprite_tpl_url.replace('{style_id}', req.params.id) + query;
+  }
+
+  // @ttungbmt
+  const font_tpl_url = process.env.FONT_TEMPLATE_URL;
+  if(font_tpl_url && url.startsWith('local://fonts')){
+    return font_tpl_url + query;
+  }
+  
   return url.replace('local://', getPublicUrl(publicUrl, req)) + query;
 }
 
@@ -196,6 +209,20 @@ export function getTileUrls(
   }
 
   const uris = [];
+
+  // @ttungbmt
+  const xyz_tpl_url = process.env.TILE_XYZ_TEMPLATE_URL;
+  if(xyz_tpl_url){
+    uris.push(
+      xyz_tpl_url
+        .replace('{tileset_id}', req.params.id)
+        .replace('{tile_params}', tileParams)
+        .replace('{format}', format)
+        .concat(query)
+    );
+    return uris;
+  }
+
   if (!publicUrl) {
     let xForwardedPath = `${req.get('X-Forwarded-Path') ? '/' + req.get('X-Forwarded-Path') : ''}`;
     for (const domain of domains) {
