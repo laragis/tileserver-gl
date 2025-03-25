@@ -259,6 +259,41 @@ export const serve_style = {
             data.replace('file://', '').replace(options.paths.files, ''),
           );
       }
+
+      // @ttungbmt
+      let tiles = source.tiles;
+      const xyz_tpl_url = process.env.TILE_XYZ_TEMPLATE_URL;
+      const proxy_base_url = process.env.PROXY_BASE_URL;
+
+      if(tiles && xyz_tpl_url){
+        source.tiles = source.tiles.map(url => {
+          if(proxy_base_url && url?.startsWith('{proxy_base_url}')){
+            return url.replace('{proxy_base_url}', proxy_base_url)
+          }
+          
+          if(url.startsWith('pmtiles://') || url.startsWith('mbtiles://')){
+            const protocol = url.split(':')[0];
+            let dataId = url.replace('pmtiles://', '').replace('mbtiles://', '');
+
+            const mapsTo = (params.mapping || {})[dataId];
+            if (mapsTo) {
+              dataId = mapsTo;
+            }
+
+            const identifier = reportTiles(dataId, protocol);
+            if (!identifier) {
+              return null;
+            }
+
+            return xyz_tpl_url
+              .replace('{tileset_id}', identifier)
+              .replace('{tile_params}', '{z}/{x}/{y}')
+              .replace('{format}', '.pbf')
+          }
+
+          return url;
+        });
+      }
     }
 
     for (const obj of styleJSON.layers) {

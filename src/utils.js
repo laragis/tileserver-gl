@@ -73,6 +73,12 @@ export function allowedSpriteScales(scale, maxScale = 3) {
  * @returns {string} - The fixed URL string.
  */
 export function fixUrl(req, url, publicUrl) {
+  // @ttungbmt
+  const proxy_base_url = process.env.PROXY_BASE_URL;
+  if(proxy_base_url && url?.startsWith('{proxy_base_url}')){
+    return url.replace('{proxy_base_url}', proxy_base_url)
+  }
+  
   if (!url || typeof url !== 'string' || url.indexOf('local://') !== 0) {
     return url;
   }
@@ -83,6 +89,14 @@ export function fixUrl(req, url, publicUrl) {
   let query = '';
   if (queryParams.length) {
     query = `?${queryParams.join('&')}`;
+  }
+
+  // @ttungbmt
+  const tile_json_tpl_url = process.env.TILE_JSON_TEMPLATE_URL;
+  const regex = /^local:\/\/data\/(.+)\.json/;
+  const match = url.match(regex);
+  if(tile_json_tpl_url && match){
+    return tile_json_tpl_url.replace('{tileset_id}', match[1]) + query;
   }
 
   // @ttungbmt
