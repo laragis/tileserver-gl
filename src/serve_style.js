@@ -321,7 +321,10 @@ export const serve_style = {
                 path.relative(options.paths.sprites, path.dirname(styleFile)),
               ),
           );
-          styleJSON.sprite = `local://styles/${id}/sprite`;
+          // @ttungbmt
+          const match = styleJSON.sprite.match(/^([\w-]+)\/sprite$/);
+          const style_id = match ? match[1] : id;
+          styleJSON.sprite = `local://styles/${style_id}/sprite`;
           spritePaths.push({ id: 'default', path: spritePath });
         }
       } else {
@@ -336,7 +339,10 @@ export const serve_style = {
                   path.relative(options.paths.sprites, path.dirname(styleFile)),
                 ),
             );
-            spriteItem.url = `local://styles/${id}/sprite/` + spriteItem.id;
+            // @ttungbmt
+            const match = styleJSON.sprite.match(/^([\w-]+)\/sprite$/);
+            const style_id = match ? match[1] : id;
+            spriteItem.url = `local://styles/${style_id}/sprite/` + spriteItem.id;
             spritePaths.push({ id: spriteItem.id, path: spritePath });
           }
         }

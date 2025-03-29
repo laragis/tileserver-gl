@@ -225,11 +225,12 @@ export function getTileUrls(
   const uris = [];
 
   // @ttungbmt
-  const xyz_tpl_url = process.env.TILE_XYZ_TEMPLATE_URL;
-  if(xyz_tpl_url){
+  const style_xyz_tpl_url = process.env.TILE_STYLE_XYZ_TEMPLATE_URL;
+  const match = path?.match(/^styles\/([\w-]+)$/);
+  if(style_xyz_tpl_url && match && match[1]){
     uris.push(
-      xyz_tpl_url
-        .replace('{tileset_id}', req.params.id)
+      style_xyz_tpl_url
+        .replace('{tileset_id}', match[1])
         .replace('{tile_params}', tileParams)
         .replace('{format}', format)
         .concat(query)
