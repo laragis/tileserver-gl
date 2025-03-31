@@ -226,11 +226,25 @@ export function getTileUrls(
 
   // @ttungbmt
   const style_xyz_tpl_url = process.env.TILE_STYLE_XYZ_TEMPLATE_URL;
-  const match = path?.match(/^styles\/([\w-]+)$/);
-  if(style_xyz_tpl_url && match && match[1]){
+  const match_style_xyz = path?.match(/^styles\/([\w-]+)$/);
+  if(style_xyz_tpl_url && match_style_xyz && match_style_xyz[1]){
     uris.push(
       style_xyz_tpl_url
-        .replace('{tileset_id}', match[1])
+        .replace('{tileset_id}', match_style_xyz[1])
+        .replace('{tile_params}', tileParams)
+        .replace('{format}', format)
+        .concat(query)
+    );
+    return uris;
+  }
+
+  // @ttungbmt
+  const xyz_tpl_url = process.env.TILE_XYZ_TEMPLATE_URL;
+  const match_xyz = path?.match(/^data\/([\w-]+)$/);
+  if(xyz_tpl_url && match_xyz && match_xyz[1]){
+    uris.push(
+      xyz_tpl_url
+        .replace('{tileset_id}', match_xyz[1])
         .replace('{tile_params}', tileParams)
         .replace('{format}', format)
         .concat(query)
