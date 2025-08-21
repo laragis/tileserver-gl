@@ -74,8 +74,14 @@ export function allowedSpriteScales(scale, maxScale = 3) {
  */
 export function fixUrl(req, url, publicUrl) {
   // @ttungbmt
-  const proxy_base_url = process.env.PROXY_BASE_URL;
-  if(proxy_base_url && url?.startsWith('{proxy_base_url}')){
+  // const proxy_base_url = process.env.PROXY_BASE_URL;
+  // if(proxy_base_url && url?.startsWith('{proxy_base_url}')){
+  //   return url.replace('{proxy_base_url}', proxy_base_url)
+  // }
+
+  // @nhantt-gis
+  const proxy_base_url = process.env.PROXY_BASE_URL || publicUrl;
+  if(url?.startsWith('{proxy_base_url}')){
     return url.replace('{proxy_base_url}', proxy_base_url)
   }
   
@@ -92,17 +98,33 @@ export function fixUrl(req, url, publicUrl) {
   }
 
   // @ttungbmt
+  // const tile_json_tpl_url = process.env.TILE_JSON_TEMPLATE_URL;
+  // const regex = /^local:\/\/data\/(.+)\.json/;
+  // const match = url.match(regex);
+  // if(tile_json_tpl_url && match){
+  //   return tile_json_tpl_url.replace('{tileset_id}', match[1]) + query;
+  // }
+
+  // @nhantt-gis
   const tile_json_tpl_url = process.env.TILE_JSON_TEMPLATE_URL;
-  const regex = /^local:\/\/data\/(.+)\.json/;
-  const match = url.match(regex);
-  if(tile_json_tpl_url && match){
-    return tile_json_tpl_url.replace('{tileset_id}', match[1]) + query;
+  const tileRegex = /^local:\/\/data\/(.+)\.json/;
+  const tileMatch = url.match(tileRegex);
+  if(tile_json_tpl_url && tileMatch){
+    return tile_json_tpl_url.replace('{tileset_id}', tileMatch[1]) + query;
   }
 
   // @ttungbmt
+  // const sprite_tpl_url = process.env.SPRITE_TEMPLATE_URL;
+  // if(sprite_tpl_url && url.startsWith('local://styles')){
+  //   return sprite_tpl_url.replace('{style_id}', req.params.id) + query;
+  // }
+
+  // @nhantt-gis
   const sprite_tpl_url = process.env.SPRITE_TEMPLATE_URL;
-  if(sprite_tpl_url && url.startsWith('local://styles')){
-    return sprite_tpl_url.replace('{style_id}', req.params.id) + query;
+  const spriteRegex = /^local:\/\/styles\/([\w-]+)\/sprite/;
+  const spriteMatch = url.match(spriteRegex);
+  if(sprite_tpl_url && spriteMatch){
+    return sprite_tpl_url.replace('{sprite_id}', spriteMatch[1]) + query;
   }
 
   // @ttungbmt

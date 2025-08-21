@@ -260,17 +260,23 @@ export const serve_style = {
           );
       }
 
-      // @ttungbmt
+      // @nhantt-gis
       let tiles = source.tiles;
       const xyz_tpl_url = process.env.TILE_XYZ_TEMPLATE_URL;
-      const proxy_base_url = process.env.PROXY_BASE_URL;
+      const proxy_base_url = process.env.PROXY_BASE_URL || publicUrl;
 
-      if(tiles && xyz_tpl_url){
+      if (tiles && Array.isArray(tiles) && proxy_base_url) {
         source.tiles = source.tiles.map(url => {
-          if(proxy_base_url && url?.startsWith('{proxy_base_url}')){
-            return url.replace('{proxy_base_url}', proxy_base_url)
+          if (url?.startsWith('{proxy_base_url}')) {
+            return url.replace('{proxy_base_url}', proxy_base_url);
           }
-          
+          return url;
+        });
+      }
+
+      // @ttungbmt
+      if(tiles && xyz_tpl_url){
+        source.tiles = source.tiles.map(url => {          
           if(url.startsWith('pmtiles://') || url.startsWith('mbtiles://')){
             const protocol = url.split(':')[0];
             let dataId = url.replace('pmtiles://', '').replace('mbtiles://', '');

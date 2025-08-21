@@ -1,6 +1,6 @@
 services:
   app:
-    image: ttungbmt/tileserver-gl:latest
+    image: 10.0.0.42:32315/gtelmaps/tileserver-gl:5.2.0-beta
     build:
       context: .
       dockerfile: Dockerfile

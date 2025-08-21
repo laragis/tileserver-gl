@@ -1423,6 +1423,19 @@ export const serve_rendered = {
           }
         }
       }
+
+      // @nhantt-gis
+      let tiles = source.tiles;
+      const proxy_base_url = process.env.PROXY_BASE_URL || publicUrl;
+
+      if (tiles && Array.isArray(tiles) && proxy_base_url) {
+        source.tiles = source.tiles.map(url => {
+          if (url?.startsWith('{proxy_base_url}')) {
+            return url.replace('{proxy_base_url}', proxy_base_url);
+          }
+          return url;
+        });
+      }
     }
 
     // standard and @2x tiles are much more usual -> default to larger pools
